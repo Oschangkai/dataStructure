@@ -63,17 +63,38 @@ int main() {
     
     file.close();
     
-    //add_matrix(matrix_A, matrix_B);
-    //add_sparse(matrix_A, matrix_B);
-    //mul_matrix(matrix_A, matrix_B);
-    mul_sparse(matrix_A, matrix_B);
+    int ans = 1;
+    while (ans) {
+        cout << "1). add_matrix\n" << "2). add_sparse:\n"
+             << "3). mul_matrix\n" << "4). mul_sparse\n"
+             << "0). Exit\n"<< "Please enter your choise:";
+        cin >> ans;
+        system("clear");
+        switch (ans) {
+            case 1:
+                cout << "\n\n\nadd_matrix:\n";
+                add_matrix(matrix_A, matrix_B);
+                break;
+            case 2:
+                cout << "\n\n\nadd_sparse:\n";
+                add_sparse(matrix_A, matrix_B);
+            case 3:
+                cout << "\n\n\nmul_matrix:\n";
+                mul_matrix(matrix_A, matrix_B);
+            case 4:
+                cout << "\n\n\nmul_sparse:\n";
+                mul_sparse(matrix_A, matrix_B);
+            default:
+                break;
+        }
+        cout << "\n\n\n";
+    }
     
     return 0;
 
 }
 
 void add_matrix(int A[20][20], int B[20][20]) {
-    cout << "add_martix:\n";
     int matrix_added[20][20];
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 20; j++) {
@@ -86,7 +107,6 @@ void add_matrix(int A[20][20], int B[20][20]) {
 }
 
 void mul_matrix(int A[20][20], int B[20][20]) {
-    cout << "mul_matrix:\n";
     int matrix_muled[20][20] = {};
     
     // muled[x, y] += A[x, z] * B[z, y], z = 20
@@ -107,9 +127,9 @@ void add_sparse(int A[20][20], int B[20][20]) {
     int c3[40][3] = {{20, 20}}; // Merged 3colArr
     int added_sparse[20][20] = {};
     
-    cout << "A\'s 3-column array:\n";
+    cout << "\nA\'s 3-column array:\n";
     init_3colArr(A, a3);
-    cout << "B\'s 3-column array:\n";
+    cout << "\nB\'s 3-column array:\n";
     init_3colArr(B, b3);
     
     // Merge two arrays to c3
@@ -138,20 +158,20 @@ void add_sparse(int A[20][20], int B[20][20]) {
     c3[0][2] = k - 1;
     
     // print out c3
-    cout << "(A + B)\'s 3-column array:\n";
+    cout << "\n(A + B)\'s 3-column array:\n";
     for (i = 0; i < 20; i++) {
         if (c3[i][0] == 0 && c3[i][1] == 0 && c3[i][2] == 0) break; // if (x, y) == (0, 0) => end
         cout << c3[i][0] << " " << c3[i][1] << " " << c3[i][2] << endl;
     }
     
     // replace 0
-    for (int i = 0; i < 40; i++)
+    for (int i = 1; i < 40; i++)
         if (c3[i][2] != 0)
             added_sparse[c3[i][0]][c3[i][1]] = c3[i][2];
         else
             continue;
     // print out big array
-    cout << "20*20 array:" << endl;
+    cout << "\n20*20 array:" << endl;
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 20; j++) {
             cout << added_sparse[i][j] << " ";
@@ -160,23 +180,22 @@ void add_sparse(int A[20][20], int B[20][20]) {
     }
 }
 
-void mul_sparse(int A[20][20], int B[20][20])
-{
-    int num = 0, index1, index2;
+void mul_sparse(int A[20][20], int B[20][20]) {
     int a3[40][3] = {{20, 20}}, b3[40][3] = {{20, 20}}; // a, b 3-colArr
     int c3[40][3] = {{20, 20}}; // Merged 3colArr
     int muled_sparse[20][20] = {};
+    int num = 0, index1, index2;
     
-    cout << "A\'s 3-column array:\n";
+    cout << "\nA\'s 3-column array:\n";
     init_3colArr(A, a3);
-    cout << "B\'s 3-column array:\n";
+    cout << "\nB\'s 3-column array:\n";
     init_3colArr(B, b3);
     
-    for (int x = 0; x < 40; x++)
+    for (int x = 0; x < 40; x++) {
         for (int y = 0; y < 40; y++) {
             index1 = a3[x][0];
             index2 = b3[y][1];
-            if (a3[x][1] == b3[y][0] && a3[x][2] != 0 && b3[y][2] != 0) {
+            if ( (a3[x][1] == b3[y][0]) && a3[x][2] != 0 && b3[y][2] != 0) {
                 //給定相乘後的結果要放的位置
                 c3[num][0] = a3[x][0];
                 c3[num][1] = b3[y][1];
@@ -189,32 +208,24 @@ void mul_sparse(int A[20][20], int B[20][20])
                 num++;
             }
         }
+    }
     
     c3[0][2] = num - 1;
-    /*  直接乘 概念的起源
-     for(int i=0;i<20;i++) {
-        for(int j=0;j<20;j++) {
-            for(int num=0;num<20;num++)
-            out[i][j]+= A[i][num]*B[num][j];
-        }
-     }
-     */
 
     // repalce the value of muled_sparse array which is entire 0
-    for (int i = 0; i < 40; i++) {
+    for (int i = 1; i < 40; i++)
         if (c3[i][2] != 0)
             muled_sparse[c3[i][0]][c3[i][1]] = c3[i][2];
         else
             continue;
-    }
     // print out c3
-    cout << "(A * B)\'s 3-column array:\n";
+    cout << "\n(A * B)\'s 3-column array:\n";
     for (int i = 0; i < 20; i++) {
-        //if (c3[i][0] == 0 && c3[i][1] == 0 && c3[i][2] == 0) break; // if (x, y) == (0, 0) => end
+        if (c3[i][0] == 0 && c3[i][1] == 0 && c3[i][2] == 0) break; // if (x, y) == (0, 0) => end
         cout << c3[i][0] << " " << c3[i][1] << " " << c3[i][2] << endl;
     }
     // print out big array
-    cout << "20*20 array:" << endl;
+    cout << "\n20*20 array:" << endl;
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 20; j++) {
             cout << muled_sparse[i][j] << "  ";
