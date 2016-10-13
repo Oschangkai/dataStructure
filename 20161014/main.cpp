@@ -63,27 +63,37 @@ int main() {
     
     file.close();
     
+    // Menu
     int ans = 1;
     while (ans) {
-        cout << "1). add_matrix\n" << "2). add_sparse:\n"
+        cout << "1). add_matrix\n" << "2). add_sparse\n"
              << "3). mul_matrix\n" << "4). mul_sparse\n"
-             << "0). Exit\n"<< "Please enter your choise:";
+             << "0). Exit\n" << "Please enter your choise:";
         cin >> ans;
-        system("clear");
+        
+        if (cin.fail()) {
+            cout << "Wrong Input!\n";
+            return 1;
+        }
+        
+        system("cls");
         switch (ans) {
             case 1:
-                cout << "\n\n\nadd_matrix:\n";
+                cout << "add_matrix:\n";
                 add_matrix(matrix_A, matrix_B);
                 break;
             case 2:
-                cout << "\n\n\nadd_sparse:\n";
+                cout << "add_sparse:\n";
                 add_sparse(matrix_A, matrix_B);
+                break;
             case 3:
-                cout << "\n\n\nmul_matrix:\n";
+                cout << "mul_matrix:\n";
                 mul_matrix(matrix_A, matrix_B);
+                break;
             case 4:
-                cout << "\n\n\nmul_sparse:\n";
+                cout << "mul_sparse:\n";
                 mul_sparse(matrix_A, matrix_B);
+                break;
             default:
                 break;
         }
