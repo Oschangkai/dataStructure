@@ -3,14 +3,14 @@
 //  calculator
 //
 //  Created by KaiYi.C on 11/27/16.
-//  Copyright © 2016 KaiYi.C. All rights reserved.
 //
 
-#include <cstring>
-#include <stack>
-#include <math.h>
-#include <iostream>
-#define toDigit(x) (x-'0')
+#define _CRT_SECURE_NO_WARNINGS // Visual Studio 的問題
+#include <cstring> // strtok 分割字串用
+#include <stack> // 堆疊
+#include <math.h> // 做次方運算用
+#include <iostream> // 基本
+#define toDigit(x) (x-'0') // 轉換為數字，只能轉一個 已棄用
 using namespace std;
 
 bool error;
@@ -58,14 +58,22 @@ int main() {
     char input[1000], *pointer;
     unsigned long length;
     while(true) {
-        cout << "輸入運算式 (輸入 \".\" 離開，每個運算符號必須加空格):\n";
+        cout << "======== 使用說明 ========\n";
+        cout << "可以做加、減、乘、除、次方運算\n";
+        cout << "運算元以及運算子之間要用空格分開\n";
+        cout << "範例： \"( 1 + 2 ) * 3 - 4 / 5 ^ 6\"\n\n";
+        cout << "輸入運算式 (輸入 \".\" 離開)：";
         //%[^\n] -> 讀到不是 \n 的都存入， ^ 代表補集
         // %*c -> 讀到後就取消輸入，c 代表字元，* 代表接受切割
         scanf("%[^\n]%*c", input);
         if(input[0] == '.') break;
         
         length = strlen(input);
-        if(length == 0) { getchar(); continue; } // 沒輸入就跳回
+        if (length == 0 || length > 997) { // 沒輸入就跳回，大於 1000 的情況是：記憶體殘值
+            getchar();
+            cout << "\n\n\n";
+            continue;
+        }
         // 在運算最後面加上 ' )'，加完以後放上結束符號
         input[length] = ' '; input[length + 1] = ')'; input[length + 2] = '\0';
         error = false;
@@ -76,7 +84,7 @@ int main() {
         while(pointer && !error)    { // 如果沒發生錯誤又有字元被讀入
             // 如果是數字，把它轉為整數後放入 operands 裡面
             if( isdigit(*pointer) )
-                operands.push(toDigit(*pointer));
+                operands.push(atoi(pointer));
             // 如果是符號
             else switch(*pointer) {
                     case '(' :
@@ -104,9 +112,10 @@ int main() {
             // 讀完以後執行這個會直接指到下一個(必要行為)
             pointer = strtok(NULL, " ");
         }
+        //
         // 當發生錯誤 或 跑完 While 後： operators 不為空 或 operands 的大小不為 1 時，就是錯誤
         if(error || !operators.empty() || operands.size() != 1) {
-            cout << "ERROR\n";
+            cout << "\nERROR\n\n\n";
             // pop all, 免於錯誤
             while(!operands.empty())
                 operands.pop();
@@ -114,8 +123,12 @@ int main() {
                 operators.pop();
         } else {
             // 如果沒有錯誤，印出結果
-            cout << operands.top() << endl;
+            cout << "----------------------------------\n";
+            cout << "答案：" << operands.top() << endl;
+            cout << "\n\n\n";
+            // 清乾淨
             operands.pop();
+            input[0] = {};
         }
     }
     return 0;
